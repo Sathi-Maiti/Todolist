@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Planner</title>
+</head>
+<body>
+
+    <h1>📅 My Daily Planner</h1>
+
+    <h2>Today's Goals</h2>
+
+    <ul>
+        <li>Study HTML</li>
+        <li>Complete Assignment</li>
+        <li>Exercise for 30 Minutes</li>
+        <li>Read a Book</li>
+    </ul>
+
+    <hr>
+
+    <h2>Add New Goal</h2>
+
+    <form>
+        <label>Goal:</label><br>
+        <input type="text" placeholder="Enter your goal"><br><br>
+
+        <label>Priority:</label><br>
+        <select>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+        </select><br><br>
+
+        <input type="submit" value="Save Goal">
+        <input type="reset" value="Clear">
+    </form>
+
+</body>
+</html>
