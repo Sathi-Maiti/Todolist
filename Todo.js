@@ -1,75 +1,76 @@
-const input = document.getElementById("todo-input");
-const addButton = document.getElementById("add-btn");
-const todoList = document.getElementById("todo-list");
+const taskInput = document.getElementById("taskInput");
+const addBtn = document.getElementById("addBtn");
+const taskList = document.getElementById("taskList");
+const emptyMessage = document.getElementById("emptyMessage");
 
-// Load saved tasks
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-function displayTasks() {
-    todoList.innerHTML = "";
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderTasks() {
+    taskList.innerHTML = "";
+
+    if (tasks.length === 0) {
+        emptyMessage.style.display = "block";
+    } else {
+        emptyMessage.style.display = "none";
+    }
 
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
 
-        li.innerHTML = `
-            <span class="${task.completed ? "completed" : ""}">
-                ${task.text}
-            </span>
-            <button onclick="completeTask(${index})">Complete</button>
-            <button onclick="editTask(${index})">Edit</button>
-            <button onclick="deleteTask(${index})">Delete</button>
-        `;
+        const span = document.createElement("span");
+        span.textContent = task.text;
 
-        todoList.appendChild(li);
+        if (task.completed) {
+            span.style.textDecoration = "line-through";
+        }
+
+        span.onclick = () => {
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks();
+            renderTasks();
+        };
+
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Delete";
+
+        delBtn.onclick = () => {
+            tasks.splice(index, 1);
+            saveTasks();
+            renderTasks();
+        };
+
+        li.appendChild(span);
+        li.appendChild(delBtn);
+
+        taskList.appendChild(li);
     });
 }
 
-addButton.addEventListener("click", function () {
-    const text = input.value.trim();
+function addTask() {
+    const text = taskInput.value.trim();
 
-    if (text === "") {
-        alert("Please enter a task!");
-        return;
-    }
+    if (text === "") return;
 
     tasks.push({
         text: text,
         completed: false
     });
 
-    input.value = "";
-
     saveTasks();
-    displayTasks();
+    renderTasks();
+    taskInput.value = "";
+}
+
+addBtn.addEventListener("click", addTask);
+
+taskInput.addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+        addTask();
+    }
 });
 
-function completeTask(index) {
-    tasks[index].completed = !tasks[index].completed;
-
-    saveTasks();
-    displayTasks();
-}
-
-function editTask(index) {
-    const newText = prompt("Edit your task:", tasks[index].text);
-
-    if (newText !== null && newText.trim() !== "") {
-        tasks[index].text = newText.trim();
-
-        saveTasks();
-        displayTasks();
-    }
-}
-
-function deleteTask(index) {
-    tasks.splice(index, 1);
-
-    saveTasks();
-    displayTasks();
-}
-
-function saveTasks() {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-displayTasks();
+renderTasks();
